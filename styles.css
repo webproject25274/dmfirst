@@ -28,7 +28,7 @@ body {
   position: relative;
 }
 
-/* Banner / Logo Section - Circular Badge Logo */
+/* Banner / Logo Section - Gold Circular Badge Logo */
 .banner-wrapper {
   position: relative;
   margin-top: 10px;
@@ -44,7 +44,7 @@ body {
   width: 200px;
   height: 200px;
   border-radius: 50%;
-  background: radial-gradient(circle, rgba(0, 198, 255, 0.35) 0%, rgba(0, 114, 255, 0.15) 50%, rgba(6, 7, 17, 0) 75%);
+  background: radial-gradient(circle, rgba(234, 179, 8, 0.35) 0%, rgba(202, 138, 4, 0.15) 50%, rgba(6, 7, 17, 0) 75%);
   z-index: 1;
   animation: pulse-glow 3s infinite ease-in-out;
 }
@@ -56,8 +56,8 @@ body {
   height: 155px;
   border-radius: 50%;
   object-fit: cover;
-  border: 3px solid #00c6ff;
-  box-shadow: 0 0 25px rgba(0, 198, 255, 0.4), inset 0 0 15px rgba(0, 114, 255, 0.3);
+  border: 3px solid #eab308;
+  box-shadow: 0 0 25px rgba(234, 179, 8, 0.4), inset 0 0 15px rgba(234, 179, 8, 0.3);
   transition: transform 0.3s ease;
 }
 
@@ -491,7 +491,7 @@ body {
   height: 80px;
   border-radius: 50%;
   object-fit: cover;
-  border: 2px solid #38bdf8;
+  border: 2px solid #eab308;
   background: #060a14;
 }
 

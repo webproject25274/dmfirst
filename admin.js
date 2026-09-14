@@ -1,18 +1,18 @@
-// Default configuration definition with user's Firebase Project Credentials
+// Default configuration definition for DmFirst
 const defaultConfig = {
   adminPassword: 'admin123',
   firebaseApiKey: 'AIzaSyB04qeNQo-a50_u8kkwPWfj-8O0E7TrvOQ',
   firebaseProjectId: 'landi-1b95a',
   firebaseDatabaseUrl: 'https://landi-1b95a-default-rtdb.firebaseio.com',
   firebaseAuthDomain: 'landi-1b95a.firebaseapp.com',
-  bannerImage: 'banner.jpg',
+  bannerImage: 'logo.jpg',
   verifiedBadgeText: 'VERIFIED COMMUNITY',
   mainTitle: 'Join Our Premium Color Trading Community',
   subTitle: 'Daily Trading Signals • Expert Market Analysis • Fast Updates • Trusted Community',
   timerSeconds: 5,
   autoRedirect: true,
   telegramText: 'JOIN TELEGRAM NOW',
-  telegramUrl: 'https://t.me/',
+  telegramUrl: 'https://t.me/+1YTmls9cP444OGFl',
   statusText: 'ACTIVATED',
   stat1Value: '50K+',
   stat1Label: 'Members',
@@ -23,7 +23,7 @@ const defaultConfig = {
   stat4Value: '1500+',
   stat4Label: 'Signals',
   footerHeading: 'Start Your Trading Journey Today',
-  managerName: 'Sanjeev',
+  managerName: 'DmFirst',
   copyrightText: '© 2026 All Rights Reserved'
 };
 
@@ -32,7 +32,7 @@ let isAuthenticated = false;
 
 function loadConfig() {
   try {
-    const saved = localStorage.getItem('surya_landing_config');
+    const saved = localStorage.getItem('dmfirst_landing_config');
     if (saved) {
       currentConfig = { ...defaultConfig, ...JSON.parse(saved) };
     }
@@ -60,11 +60,11 @@ function initFirebaseIfConfigured() {
       // 1. Listen to Cloud Firestore
       if (firebase.firestore) {
         const db = firebase.firestore();
-        db.collection('config').doc('surya').onSnapshot((doc) => {
+        db.collection('config').doc('dmfirst').onSnapshot((doc) => {
           if (doc.exists) {
             const data = doc.data();
             currentConfig = { ...currentConfig, ...data };
-            localStorage.setItem('surya_landing_config', JSON.stringify(currentConfig));
+            localStorage.setItem('dmfirst_landing_config', JSON.stringify(currentConfig));
             populateForm();
           }
         }, (err) => console.warn('Firestore sync notice:', err));
@@ -72,12 +72,12 @@ function initFirebaseIfConfigured() {
 
       // 2. Listen to Realtime Database
       if (currentConfig.firebaseDatabaseUrl && firebase.database) {
-        const dbRef = firebase.database().ref('surya_config');
+        const dbRef = firebase.database().ref('dmfirst_config');
         dbRef.on('value', (snapshot) => {
           const data = snapshot.val();
           if (data) {
             currentConfig = { ...currentConfig, ...data };
-            localStorage.setItem('surya_landing_config', JSON.stringify(currentConfig));
+            localStorage.setItem('dmfirst_landing_config', JSON.stringify(currentConfig));
             populateForm();
           }
         }, (err) => console.warn('Realtime DB sync notice:', err));
@@ -238,13 +238,13 @@ document.addEventListener('DOMContentLoaded', () => {
     currentConfig.copyrightText = document.getElementById('copyrightText').value;
 
     try {
-      localStorage.setItem('surya_landing_config', JSON.stringify(currentConfig));
+      localStorage.setItem('dmfirst_landing_config', JSON.stringify(currentConfig));
 
       let cloudSaved = false;
 
       if (typeof firebase !== 'undefined' && firebase.apps.length && firebase.firestore) {
         try {
-          await firebase.firestore().collection('config').doc('surya').set(currentConfig);
+          await firebase.firestore().collection('config').doc('dmfirst').set(currentConfig);
           cloudSaved = true;
           console.log('☁️ Successfully saved to Firestore!');
         } catch (fsErr) {
@@ -254,7 +254,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       if (currentConfig.firebaseDatabaseUrl && typeof firebase !== 'undefined' && firebase.apps.length && firebase.database) {
         try {
-          await firebase.database().ref('surya_config').set(currentConfig);
+          await firebase.database().ref('dmfirst_config').set(currentConfig);
           cloudSaved = true;
           console.log('☁️ Successfully saved to Realtime DB!');
         } catch (rtdbErr) {
@@ -278,7 +278,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const resetBtn = document.getElementById('reset-btn');
   resetBtn.addEventListener('click', () => {
     if (confirm('Are you sure you want to reset all settings to defaults?')) {
-      localStorage.removeItem('surya_landing_config');
+      localStorage.removeItem('dmfirst_landing_config');
       currentConfig = { ...defaultConfig };
       populateForm();
       showToast('🔄 Settings reset to default!');

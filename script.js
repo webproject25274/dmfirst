@@ -1,18 +1,18 @@
-// Default configuration with user's Firebase Project Credentials
+// Default configuration for DmFirst
 const defaultConfig = {
   adminPassword: 'admin123',
   firebaseApiKey: 'AIzaSyB04qeNQo-a50_u8kkwPWfj-8O0E7TrvOQ',
   firebaseProjectId: 'landi-1b95a',
   firebaseDatabaseUrl: 'https://landi-1b95a-default-rtdb.firebaseio.com',
   firebaseAuthDomain: 'landi-1b95a.firebaseapp.com',
-  bannerImage: 'banner.jpg',
+  bannerImage: 'logo.jpg',
   verifiedBadgeText: 'VERIFIED COMMUNITY',
   mainTitle: 'Join Our Premium Color Trading Community',
   subTitle: 'Daily Trading Signals • Expert Market Analysis • Fast Updates • Trusted Community',
   timerSeconds: 5,
   autoRedirect: true,
   telegramText: 'JOIN TELEGRAM NOW',
-  telegramUrl: 'https://t.me/',
+  telegramUrl: 'https://t.me/+1YTmls9cP444OGFl',
   statusText: 'ACTIVATED',
   stat1Value: '50K+',
   stat1Label: 'Members',
@@ -23,7 +23,7 @@ const defaultConfig = {
   stat4Value: '1500+',
   stat4Label: 'Signals',
   footerHeading: 'Start Your Trading Journey Today',
-  managerName: 'Sanjeev',
+  managerName: 'DmFirst',
   copyrightText: '© 2026 All Rights Reserved'
 };
 
@@ -94,7 +94,7 @@ function renderPage(config) {
 // Initialize Firebase & listen for live cloud updates across all devices
 function initCloudSync() {
   try {
-    const saved = localStorage.getItem('surya_landing_config');
+    const saved = localStorage.getItem('dmfirst_landing_config');
     if (saved) {
       renderPage(JSON.parse(saved));
     } else {
@@ -117,22 +117,22 @@ function initCloudSync() {
 
       if (firebase.firestore) {
         const db = firebase.firestore();
-        db.collection('config').doc('surya').onSnapshot((doc) => {
+        db.collection('config').doc('dmfirst').onSnapshot((doc) => {
           if (doc.exists) {
             const cloudData = doc.data();
             renderPage(cloudData);
-            localStorage.setItem('surya_landing_config', JSON.stringify(cloudData));
+            localStorage.setItem('dmfirst_landing_config', JSON.stringify(cloudData));
           }
         }, (err) => console.warn('Firestore sync notice:', err));
       }
 
       if (firebase.database && defaultConfig.firebaseDatabaseUrl) {
-        const dbRef = firebase.database().ref('surya_config');
+        const dbRef = firebase.database().ref('dmfirst_config');
         dbRef.on('value', (snapshot) => {
           const cloudData = snapshot.val();
           if (cloudData) {
             renderPage(cloudData);
-            localStorage.setItem('surya_landing_config', JSON.stringify(cloudData));
+            localStorage.setItem('dmfirst_landing_config', JSON.stringify(cloudData));
           }
         }, (err) => console.warn('Realtime DB sync notice:', err));
       }
