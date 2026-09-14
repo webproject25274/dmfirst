@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Control Panel | Password Protected</title>
+  <link rel="stylesheet" href="styles.css">
+  
+  <!-- Firebase App, Database & Firestore SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+</head>
+<body>
+
+  <!-- Password Protection Login Modal -->
+  <div id="login-modal" class="login-overlay">
+    <div class="login-card">
+      <div class="login-icon">🔒</div>
+      <h2 class="login-title">Admin Access Required</h2>
+      <p class="login-subtitle">Enter your password to unlock the admin control panel.</p>
+      
+      <form id="login-form">
+        <div class="form-group">
+          <input type="password" id="admin-password-input" class="form-input" placeholder="Enter password (default: admin123)" required autofocus>
+        </div>
+        <button type="submit" class="btn-primary" style="width: 100%; margin-top: 10px;">Unlock Panel</button>
+        <p id="login-error" class="error-msg">Incorrect password! Please try again.</p>
+      </form>
+    </div>
+  </div>
+
+  <!-- Admin Panel Content (Hidden until authenticated) -->
+  <div id="admin-content" class="admin-container" style="display: none;">
+    
+    <!-- Admin Header -->
+    <div class="admin-header">
+      <div class="admin-title-group">
+        <h1>⚙️ Admin Control Panel <span class="admin-badge">ENCRYPTED & PROTECTED</span></h1>
+        <p class="admin-subtitle">Customize landing page content, banner image, Telegram link, and Firebase settings.</p>
+      </div>
+      <div class="admin-actions-top">
+        <button type="button" id="logout-btn" class="btn-secondary">🔒 Lock Panel</button>
+        <button type="button" id="reset-btn" class="btn-danger">Reset Defaults</button>
+        <a href="index.html" class="btn-secondary" target="_blank">👁️ Preview Page</a>
+      </div>
+    </div>
+
+    <!-- Admin Form -->
+    <form id="admin-form">
+      
+      <!-- Section 0: Password & Firebase Authentication Settings -->
+      <div class="admin-section">
+        <div class="section-title">🔐 Admin Password & Firebase Integration</div>
+        
+        <div class="form-group">
+          <label class="form-label" for="adminPasscode">Change Admin Password</label>
+          <input type="password" id="adminPasscode" class="form-input" placeholder="Set new admin password">
+        </div>
+
+        <div style="margin-top: 16px; padding-top: 16px; border-top: 1px solid #1e293b;">
+          <label class="form-label" style="color: #38bdf8; font-weight: 700;">🔥 Firebase Config Setup (Realtime DB & Firestore)</label>
+          <p style="font-size: 11px; color: #94a3b8; margin-bottom: 12px;">Enter your Firebase project details to sync settings and password to Firebase Database.</p>
+          
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="firebaseApiKey">Firebase API Key</label>
+              <input type="text" id="firebaseApiKey" class="form-input" placeholder="AIzaSy...">
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="firebaseProjectId">Project ID</label>
+              <input type="text" id="firebaseProjectId" class="form-input" placeholder="my-project-id">
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="firebaseDatabaseUrl">Database URL (Optional for Realtime DB)</label>
+              <input type="url" id="firebaseDatabaseUrl" class="form-input" placeholder="https://my-project-id-default-rtdb.firebaseio.com">
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="firebaseAuthDomain">Auth Domain</label>
+              <input type="text" id="firebaseAuthDomain" class="form-input" placeholder="my-project-id.firebaseapp.com">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Section 1: Banner / Logo -->
+      <div class="admin-section">
+        <div class="section-title">🖼️ Banner / Logo Graphic</div>
+        <div class="form-group">
+          <label class="form-label">Current Banner Preview & Upload</label>
+          <div class="upload-wrapper">
+            <img id="banner-preview" src="banner.jpg" alt="Preview" class="preview-thumb">
+            <div class="file-input-btn">
+              <label for="image-upload" class="btn-secondary">Upload New Image</label>
+              <input type="file" id="image-upload" accept="image/*">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Section 2: Badge & Headings -->
+      <div class="admin-section">
+        <div class="section-title">📝 Badge & Headings</div>
+        <div class="form-group">
+          <label class="form-label" for="verifiedBadgeText">Verified Badge Text</label>
+          <input type="text" id="verifiedBadgeText" class="form-input" placeholder="e.g. VERIFIED COMMUNITY">
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="mainTitle">Main Title</label>
+          <input type="text" id="mainTitle" class="form-input" placeholder="Main Heading">
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="subTitle">Sub-Title Highlights</label>
+          <textarea id="subTitle" class="form-textarea" placeholder="Features bullet text"></textarea>
+        </div>
+      </div>
+
+      <!-- Section 3: Telegram CTA & Countdown Timer -->
+      <div class="admin-section">
+        <div class="section-title">⚡ Telegram Link & Auto-Redirect Timer</div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label" for="timerSeconds">Countdown Timer (Seconds)</label>
+            <input type="number" id="timerSeconds" class="form-input" min="1" max="60" placeholder="5">
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="statusText">Status Text</label>
+            <input type="text" id="statusText" class="form-input" placeholder="e.g. ACTIVATED">
+          </div>
+        </div>
+        <div class="form-group" style="margin-bottom: 12px;">
+          <label class="form-label" style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+            <input type="checkbox" id="autoRedirect" checked style="width: 16px; height: 16px;">
+            <span>Automatically redirect to Telegram link when timer reaches 00</span>
+          </label>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="telegramText">Button Text</label>
+          <input type="text" id="telegramText" class="form-input" placeholder="e.g. JOIN TELEGRAM NOW">
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="telegramUrl">Telegram Group/Channel Link</label>
+          <input type="url" id="telegramUrl" class="form-input" placeholder="https://t.me/your_channel_name">
+        </div>
+      </div>
+
+      <!-- Section 4: 2x2 Stats Grid -->
+      <div class="admin-section">
+        <div class="section-title">📊 Statistics Grid (2x2)</div>
+        
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label" for="stat1Value">Stat 1 Value</label>
+            <input type="text" id="stat1Value" class="form-input" placeholder="50K+">
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="stat1Label">Stat 1 Label</label>
+            <input type="text" id="stat1Label" class="form-input" placeholder="Members">
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label" for="stat2Value">Stat 2 Value</label>
+            <input type="text" id="stat2Value" class="form-input" placeholder="98%">
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="stat2Label">Stat 2 Label</label>
+            <input type="text" id="stat2Label" class="form-input" placeholder="Satisfaction">
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label" for="stat3Value">Stat 3 Value</label>
+            <input type="text" id="stat3Value" class="form-input" placeholder="10K+">
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="stat3Label">Stat 3 Label</label>
+            <input type="text" id="stat3Label" class="form-input" placeholder="Active Traders">
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label" for="stat4Value">Stat 4 Value</label>
+            <input type="text" id="stat4Value" class="form-input" placeholder="1500+">
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="stat4Label">Stat 4 Label</label>
+            <input type="text" id="stat4Label" class="form-input" placeholder="Signals">
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Section 5: Footer & Manager Details -->
+      <div class="admin-section">
+        <div class="section-title">👤 Footer & Manager Info</div>
+        <div class="form-group">
+          <label class="form-label" for="footerHeading">Footer Heading</label>
+          <input type="text" id="footerHeading" class="form-input" placeholder="Start Your Trading Journey Today">
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label" for="managerName">Manager Name</label>
+            <input type="text" id="managerName" class="form-input" placeholder="Sanjeev">
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="copyrightText">Copyright Line</label>
+            <input type="text" id="copyrightText" class="form-input" placeholder="© 2026 All Rights Reserved">
+          </div>
+        </div>
+      </div>
+
+      <!-- Sticky Footer Action -->
+      <div class="admin-sticky-bar">
+        <a href="index.html" class="btn-secondary">← Back to Landing Page</a>
+        <button type="submit" class="btn-primary">💾 Save Changes</button>
+      </div>
+
+    </form>
+
+    <div id="toast" class="toast"></div>
+
+  </div>
+
+  <script src="admin.js"></script>
+</body>
+</html>
